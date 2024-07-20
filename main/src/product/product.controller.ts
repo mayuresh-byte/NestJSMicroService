@@ -2,6 +2,7 @@ import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ProductDto } from './dto';
 import { Product } from './pdoruct.model';
 import { ProductService } from './product.service';
+import { EventPattern } from '@nestjs/microservices';
 
 @Controller('product')
 export class ProductController {
@@ -15,5 +16,10 @@ export class ProductController {
     @Get()
     async all() {
         return this.productService.all();
+    }
+
+    @EventPattern('Hello')
+    async greet(data: string) {
+        console.log(data);
     }
 }
