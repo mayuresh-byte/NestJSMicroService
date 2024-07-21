@@ -9,13 +9,15 @@ export class ProductController {
 
     @Get()
     async all() {
-        this.client.emit('Hello', 'Hello From RabbitMQ !!');
+        // this.client.emit('Hello', 'Hello From RabbitMQ !!');
         return this.productService.all();
     }
 
     @Post()
     async create(@Body() productDto: ProductDto) {
-        return this.productService.create(productDto);
+        const product = await this.productService.create(productDto);
+        this.client.emit('product_created', product);
+        return product;
     }
 
     @Get(':id')
@@ -25,11 +27,25 @@ export class ProductController {
 
     @Put(':id')
     async update(@Param('id') id: number, @Body() dto: Partial<ProductDto>) {
-        return this.productService.update(id, dto);
+        await this.productService.update(id, dto);
+
+        const product = await this.productService.getUser(id);
+        this.client.emit('product_updated', product);
+        return product;
     }
 
     @Delete(':id')
     async delete(@Param('id') id: number) {
-        return this.productService.delete(id);
+        await this.productService.delete(id);
+        this.client.emit('product_deleted', id);
+    }
+
+    @Post(':id/like')
+    async like(@Param('id') id: number) {
+        const product = await this.productService.getUser(id);
+
+        return this.productService.update(id, {
+            likes: product.likes + 1
+        });
     }
 }

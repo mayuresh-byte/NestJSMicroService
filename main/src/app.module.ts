@@ -3,9 +3,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ProductModule } from './product/product.module';
+import { HttpModule } from '@nestjs/axios'
 
 @Module({
-  imports: [MongooseModule.forRoot('mongodb://localhost:27017/mongodb_ms', {autoCreate: true}), ProductModule],
+  imports: [MongooseModule.forRoot('mongodb://localhost:27017/mongodb_ms', {autoCreate: true}), ProductModule, HttpModule],
   controllers: [AppController],
   providers: [AppService],
 })
